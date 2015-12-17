@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_navigation_packages"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_cat"
+            android:title="@string/menu_navigation_packages" />
+        <item
+            android:id="@+id/menu_navigation_learned"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_pac"
+            android:title="@string/menu_navigation_learned" />
+        <item
+            android:id="@+id/menu_navigation_hard"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_sad"
+            android:title="@string/menu_navigation_hard" />
+        <item
+            android:id="@+id/menu_navigation_share"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_share"
+            android:title="@string/menu_navigation_share" />
+        <item
+            android:id="@+id/menu_navigation_vote"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_vote"
+            android:title="@string/menu_navigation_vote" />
+        <item
+            android:id="@+id/menu_navigation_feedback"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_feedback"
+            android:title="@string/menu_navigation_feedback" />
+        <item
+            android:id="@+id/menu_navigation_reset"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_reset"
+            android:title="@string/menu_navigation_reset" />
+        <item
+            android:id="@+id/menu_navigation_help"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_help"
+            android:title="@string/menu_navigation_help" />
+        <item
+            android:id="@+id/menu_navigation_community"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_comm"
+            android:title="@string/menu_navigation_community" />
+        <item
+            android:id="@+id/menu_navigation_setting"
+            android:checkable="true"
+            android:checked="false"
+            android:icon="@drawable/icon_setting"
+            android:title="@string/menu_navigation_setting" />
+
+    </group>
+</menu>
