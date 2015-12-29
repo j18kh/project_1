@@ -78,7 +78,7 @@ public class Constant {
     public static final int INTENT_REQUEST_WORD_REVIEW = 101;
     public static final int MAX_SUB_COURSE_LIMIT = 100;
     public static final String APP_SETTING_NAME = "appSetting";
-    public static final long FLIP_TRANSITION_DURATION = 200;
+    public static final long FLIP_TRANSITION_DURATION = 100;
     public static final long WAITING_DURATION = 100;
 
     public static final String WORD_COLOR_DONE = "done";

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import vn.flearn.app.card.R;
@@ -26,8 +25,18 @@ public class FragmentCard extends Fragment {
     private Word word;
     private boolean isReview;
 
-    public static FragmentCard getInstance(Word word , boolean isReview)
-    {
+    private TextView name;
+    private TextView pronounce;
+    private TextView meaning;
+    private TextView type;
+    private TextView example;
+    private TextView exampleTrans;
+    private ViewFlipper viewFlipper;
+    private ImageButton close;
+    private ImageButton speak;
+    private View view;
+
+    public static FragmentCard getInstance(Word word, boolean isReview) {
         FragmentCard result = new FragmentCard();
         result.word = word;
         result.isReview = isReview;
@@ -43,23 +52,24 @@ public class FragmentCard extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_card, container, false);
-        ((TextView) view.findViewById(R.id.fragment_card_word)).setText(word.getName());
-        ((TextView) view.findViewById(R.id.fragment_card_pronounce)).setText(word.getPronoun());
-        ((TextView) view.findViewById(R.id.fragment_card_meaning)).setText(word.getMeaning());
-        ((TextView) view.findViewById(R.id.fragment_card_type)).setText(word.getType());
-        ((TextView) view.findViewById(R.id.fragment_card_example)).setText(word.getExample());
-        ((TextView) view.findViewById(R.id.fragment_card_example_trans)).setText(word.getExampleTrans());
-        ImageButton imageButton = ((ImageButton) view.findViewById(R.id.fragment_card_close));
-        ((ViewFlipper)view.findViewById(R.id.fragment_card_viewFlipper)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), word.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        if (isReview)
-            imageButton.setVisibility(View.GONE);
-        ((ImageButton) view.findViewById(R.id.fragment_card_speak)).setOnClickListener(new View.OnClickListener() {
+        view = inflater.inflate(R.layout.fragment_card, container, false);
+        initViews();
+        setupContents();
+        return view;
+    }
+
+    private void setupContents() {
+        name.setText(word.getName());
+        pronounce.setText(word.getPronoun());
+        meaning.setText(word.getMeaning());
+        type.setText(word.getType());
+        example.setText(word.getExample());
+        exampleTrans.setText(word.getExampleTrans());
+        if (isReview) {
+            close.setVisibility(View.GONE);
+        }
+
+        speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -76,7 +86,29 @@ public class FragmentCard extends Fragment {
 
             }
         });
-        return view;
+
+        /* TODO: Add flipper animation */
+        viewFlipper.setInAnimation(getContext(), R.anim.slide_in_left);
+        viewFlipper.setOutAnimation(getContext(), R.anim.slide_out_left);
+
+        viewFlipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showNext();
+            }
+        });
+    }
+
+    private void initViews() {
+        name = (TextView) view.findViewById(R.id.fragment_card_word);
+        pronounce = (TextView) view.findViewById(R.id.fragment_card_pronounce);
+        meaning = (TextView) view.findViewById(R.id.fragment_card_meaning);
+        type = (TextView) view.findViewById(R.id.fragment_card_type);
+        example = (TextView) view.findViewById(R.id.fragment_card_example);
+        exampleTrans = (TextView) view.findViewById(R.id.fragment_card_example_trans);
+        close = (ImageButton) view.findViewById(R.id.fragment_card_close);
+        speak = (ImageButton) view.findViewById(R.id.fragment_card_speak);
+        viewFlipper = (ViewFlipper) view.findViewById(R.id.fragment_card_viewFlipper);
     }
 
 }
