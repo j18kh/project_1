@@ -20,18 +20,13 @@
             android:background="@color/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:title="Menu">
+            app:title="Title">
 
         </android.support.v7.widget.Toolbar>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/banner"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_menu_recyclerView_courses"
+            android:id="@+id/activity_sub_course_recyclerView_sub_courses"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

@@ -18,8 +18,8 @@ import vn.flearn.app.card.fragments.Help1Fragment;
 import vn.flearn.app.card.fragments.Help2Fragment;
 import vn.flearn.app.card.fragments.Help3Fragment;
 import vn.flearn.app.card.fragments.Help4Fragment;
-import vn.flearn.app.card.utils.CommonUtility;
-import vn.flearn.app.card.utils.Constants;
+import vn.flearn.app.card.utils.AppUtils;
+import vn.flearn.app.card.utils.Constant;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -70,20 +70,17 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public void SplashScreenOnclick(View view) {
-        switch (view.getId()) {
-            case R.id.fragment_help_button_start:
-                CommonUtility.setFirstTimeRun(this, Constants.FIRST_RUN, false);
-                intent = new Intent(this, MenuActivity.class);
-                break;
-            default:
-                Log.d("SplashScreenActivity", "Something wrong with SplashScreenOnClick");
-                break;
-        }
 
-        if (CommonUtility.isFirstTimeRun(this, Constants.FIRST_RUN)) {
-            intent.putExtra(Constants.LAYOUT, R.layout.activity_menu);
+        if (AppUtils.getBooleanPreference(this, Constant.FIRST_RUN, true)) {
+            intent = new Intent(this, MenuActivity.class);
+            Log.d("SplashScreenActivity", "Intent assigned");
+
+            Log.d("SplashScreenActivity", "Start activity");
             startActivity(intent);
         }
+
+        Log.d("SplashScreenActivity", "Finish");
+        AppUtils.setBooleanPreference(this, Constant.FIRST_RUN, false);
         finish();
     }
 }

@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">card</string>
+    <!-- TODO: Add more strings here -->
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">FCard</string>
+
     <string name="menu_navigation_packages">Các gói từ</string>
     <string name="menu_navigation_learned">Từ đã thuộc</string>
     <string name="menu_navigation_hard">Từ khó</string>
@@ -15,4 +15,19 @@
     <string name="menu_navigation_setting">Cấu hình</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="foobar">#fffff</string>
+    <string name="sharing_subject">Chia sẻ app hay</string>
+    <string name="sharing_text"><![CDATA[Hãy học từ vựng hiệu quả nhờ FCard: https://play.google.com/store/apps/details?id=vn.flearn.app.card&hl=en]]></string>
+    <string name="send_via">Chia sẻ qua</string>
+    <string name="google_play_url">market://details?id=</string>
+    <string name="community_link">https://www.facebook.com/fcardapp/?fref=ts</string>
+    <string name="feeback_email">thaivinhloc@gmail.com</string>
+    <string name="email_not_found">Không thấy app email để gửi phản hồi :(</string>
+    <string name="browser_not_found">Không tìm thấy browser :(</string>
+    <string name="sharing_app_not_found">Không tìm thấy app nào để chia sẻ FCard :(</string>
+    <string name="choose_email_client">Chọn app email</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_wait"> Đang load bộ đọc, thử lại trong 2 giây :)</string>
 </resources>
