@@ -237,4 +237,10 @@ public class WordDAO extends BaseDAO implements IWordDAO, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
     }
+
+    public List<Word> loadWords(String color) {
+        List<Word> words = new ArrayList<>();
+
+        return words;
+    }
 }

@@ -15,7 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vn.flearn.app.card.R;
+import vn.flearn.app.card.models.Word;
+import vn.flearn.app.card.utils.AppUtils;
 import vn.flearn.app.card.utils.Constant;
 
 public class BaseNavigationDrawerActivity extends AppCompatActivity {
@@ -29,7 +34,6 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupLayout();
-//        setContentView(getIntent().getIntExtra(Constant.LAYOUT, 0));
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -53,6 +57,12 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
                         break;
                     case R.id.menu_navigation_packages:
                         navigatePackages();
+                        break;
+                    case R.id.menu_navigation_learned:
+                        navigateWordSlide(true);
+                        break;
+                    case R.id.menu_navigation_hard:
+                        navigateWordSlide(false);
                         break;
                     case R.id.menu_navigation_share:
                         navigateSharingIntent();
@@ -93,6 +103,20 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
         drawerToggle.syncState();
+    }
+
+    private void navigateWordSlide(boolean learned) {
+        Intent intent = new Intent(this , WordSlideActivity.class);
+        intent.putExtra(Constant.REVIEW, true);
+        String value;
+        if (learned)
+            value = Constant.WORD_COLOR_DONE;
+        else
+            value = Constant.WORD_COLOR_DIFFICULT;
+        List<Word> words = AppUtils.getWords(this, value);
+        intent.putParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE, (ArrayList<Word>) words);
+        intent.putExtra(Constant.DESCRIPTION , value);
+        startActivity(intent);
     }
 
     private void setupLayout() {
@@ -179,4 +203,5 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
     public Constant.ActivityType getType() {
         return Constant.ActivityType.ERROR;
     }
+
 }

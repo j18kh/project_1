@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewParent;
+import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,11 +29,13 @@ public class WordSlideActivity extends AppCompatActivity {
     private List<Word> words;
     private CardAdapter cardAdapter;
     private Toolbar toolbar;
+    private boolean isReview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_slide);
+
 
         initViews();
         setupContents();
@@ -58,13 +61,17 @@ public class WordSlideActivity extends AppCompatActivity {
     private void setupContents() {
         Intent intent = getIntent();
         title = intent.getStringExtra(Constant.DESCRIPTION);
+        isReview = intent.getBooleanExtra(Constant.REVIEW , false);
 
         words = intent.getParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE);
+        if (words.isEmpty()) {
+            Toast.makeText(this , "Bạn đã hoàn thành gói từ này! :)" , Toast.LENGTH_LONG).show();
+        }
         Collections.shuffle(words);
     }
 
     private void setupViewPager() {
-        cardAdapter = new CardAdapter(getSupportFragmentManager(), this, words , true);
+        cardAdapter = new CardAdapter(getSupportFragmentManager(), this, words , isReview, viewPager);
         viewPager.setAdapter(cardAdapter);
     }
 

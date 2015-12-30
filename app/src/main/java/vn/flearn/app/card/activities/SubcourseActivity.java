@@ -42,9 +42,7 @@ public class SubcourseActivity extends BaseNavigationDrawerActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
 
-        wordDAO = new WordDAO();
-        wordDAO.setContext(dbContext);
-        words = wordDAO.loadByCourse(id, true);
+        getWords();
         Log.d("debug", "" + id);
 
         recyclerView = (RecyclerView) findViewById(R.id.activity_sub_course_recyclerView_sub_courses);
@@ -56,5 +54,19 @@ public class SubcourseActivity extends BaseNavigationDrawerActivity {
     @Override
     public Constant.ActivityType getType() {
         return Constant.ActivityType.SUBCOURSE;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWords();
+        adapter.resetData(words);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getWords() {
+        wordDAO = new WordDAO();
+        wordDAO.setContext(dbContext);
+        words = wordDAO.loadByCourse(id, true);
     }
 }

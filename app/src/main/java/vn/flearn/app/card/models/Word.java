@@ -35,6 +35,18 @@ public class Word implements BaseModel , Parcelable {
     private String ExampleTrans;
     private String Color;
 
+    public Word(String name, int ID, int courseId, String type, String pronoun, String meaning, String example, String exampleTrans, String color) {
+        Name = name;
+        this.ID = ID;
+        CourseId = courseId;
+        Type = type;
+        Pronoun = pronoun;
+        Meaning = meaning;
+        Example = example;
+        ExampleTrans = exampleTrans;
+        Color = color;
+    }
+
     public int getID() {
         return ID;
     }

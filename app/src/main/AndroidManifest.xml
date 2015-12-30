@@ -18,8 +18,9 @@
         <activity android:name=".activities.SplashScreenActivity" />
         <activity android:name=".activities.MenuActivity" />
         <activity android:name=".activities.SubcourseActivity" />
-        <activity android:name=".activities.WordSlideActivity"/>
-        <activity android:name=".activities.SettingActivity"></activity>
+        <activity android:name=".activities.WordSlideActivity" />
+        <activity android:name=".activities.SettingActivity" />
+        <activity android:name=".fragments.ReviewActivity"></activity>
     </application>
 
 </manifest>

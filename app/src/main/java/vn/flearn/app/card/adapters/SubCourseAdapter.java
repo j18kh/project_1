@@ -36,6 +36,11 @@ public class SubCourseAdapter extends RecyclerView.Adapter<SubCourseAdapter.SubC
         this.words = words;
         this.title = title;
 
+        resetData(this.words);
+    }
+
+    public void resetData(List<Word> words) {
+        this.words = words;
         int size = words.size() / Constant.MAX_SUB_COURSE_LIMIT;
         sizeLast = words.size() % Constant.MAX_SUB_COURSE_LIMIT;
         if (sizeLast > 0)
@@ -111,13 +116,14 @@ public class SubCourseAdapter extends RecyclerView.Adapter<SubCourseAdapter.SubC
 
                     for (int i = start; i <= end; ++i) {
                         Word current = words.get(i);
-                        if (!current.getColor().equals(Constant.WORD_COLOR_DONE)) {
+                        if (current.getColor().equals(Constant.NEUTRAL)) {
                             pass.add(current);
                         }
                     }
 
                     intent.putParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE, (ArrayList) pass);
-                    intent.putExtra(Constant.DESCRIPTION , title);
+                    intent.putExtra(Constant.DESCRIPTION, title);
+                    intent.putExtra(Constant.REVIEW , false);
                     context.startActivity(intent);
                 }
             });

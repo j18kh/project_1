@@ -98,6 +98,10 @@ public class Constant {
     public static final String DESCRIPTION = "description";
     public static final String SOUND = "setting_sound";
     public static final String SUBCOURSE_PACKAGE = "subcourse_package";
+    public static final String WORD_DONE = "word_done";
+    public static final String NEUTRAL = "0";
+    public static final String REVIEW = "review";
+    public static final String LEARNED = "learned";
 
     public enum ActivityType {
         PACKAGES, LEARNED, HARD, SHARE, VOTE, FEEDBACK, RESET, HELP, COMMUNITY, SETTINGS, ERROR, SUBCOURSE
