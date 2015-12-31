@@ -109,7 +109,6 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
                 Log.d("debug", "---menu 2 = " + menuItemDifficult);
 
 
-
                 menuItemLearned.setTitle(getResources().getString(R.string.menu_navigation_learned)
                         + " (" + currentLearned + ")");
                 menuItemDifficult.setTitle(getResources().getString(R.string.menu_navigation_hard)
@@ -133,17 +132,22 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
     }
 
     private void navigateWordSlide(boolean learned) {
-        Intent intent = new Intent(this , WordSlideActivity.class);
+        Intent intent = new Intent(this, WordSlideActivity.class);
         intent.putExtra(Constant.REVIEW, true);
         intent.putExtra(Constant.DONE, learned);
-        String value;
-        if (learned)
+        String value, description;
+        if (learned) {
             value = Constant.WORD_COLOR_DONE;
-        else
+            intent.putExtra(Constant.SUBTITLE, "");
+            description = getString(R.string.learned);
+        } else {
             value = Constant.WORD_COLOR_DIFFICULT;
+            intent.putExtra(Constant.SUBTITLE, "");
+            description = getString(R.string.hard);
+        }
         List<Word> words = AppUtils.getWords(this, value);
         intent.putParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE, (ArrayList<Word>) words);
-        intent.putExtra(Constant.DESCRIPTION , value);
+        intent.putExtra(Constant.DESCRIPTION, description);
         startActivity(intent);
     }
 

@@ -34,4 +34,6 @@
     <string name="word_difficult">Khó thuộc :(</string>
     <string name="left">"còn "</string>
     <string name="word">" từ"</string>
+    <string name="learned">Từ đã thuộc</string>
+    <string name="hard">Từ khó thuộc</string>
 </resources>
