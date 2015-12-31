@@ -26,7 +26,9 @@ public class AppUtils {
      */
     private static TextToSpeech textToSpeech;
     private static SQLiteDatabase database;
-    private AppUtils() {}
+
+    private AppUtils() {
+    }
 
     /**
      * @param context
@@ -42,8 +44,7 @@ public class AppUtils {
     /**
      * @param context
      * @param key
-     * @param flag
-     * Decides if it is the first-time run or not
+     * @param flag    Decides if it is the first-time run or not
      */
     public static void setBooleanPreference(Context context, String key, boolean flag) {
         SharedPreferences sharedPreferences
@@ -52,13 +53,27 @@ public class AppUtils {
         editor.putBoolean(key, flag);
         editor.commit();    // NEVER FORGET THIS LINE OF CODE
     }
-    public static TextToSpeech getTextToSpeech(final Context context)
-    {
+
+    public static void setIntegerPreference(Context context, String key, int value) {
+        SharedPreferences sharedPreferences
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.commit();    // NEVER FORGET THIS LINE OF CODE
+    }
+
+    public static int getIntegerPreference(Context context, String key, int init) {
+        SharedPreferences sharedPreferences
+                = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getInt(key, init);
+    }
+
+    public static TextToSpeech getTextToSpeech(final Context context) {
         if (textToSpeech == null) {
             textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
-                    Toast.makeText(context , R.string.please_wait , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.please_wait, Toast.LENGTH_SHORT).show();
                 }
             }
             );
@@ -70,16 +85,17 @@ public class AppUtils {
     public static SQLiteDatabase getDatabase(Context context) {
         if (database == null) {
             String path = context.getDatabasePath(DbContext.DATABASE_NAME).getAbsolutePath();
-            database = SQLiteDatabase.openDatabase(path , null , SQLiteDatabase.OPEN_READWRITE);
+            database = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
         }
         return database;
     }
+
     public static List<Word> getWords(Context context, String typeColor) {
         List<Word> words = new ArrayList<>();
         String query = "select * from word where color = '" + typeColor + "'";
         database = getDatabase(context);
         try {
-            Cursor cursor = database.rawQuery(query , null);
+            Cursor cursor = database.rawQuery(query, null);
             cursor.moveToPosition(-1);
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(0);
@@ -91,7 +107,7 @@ public class AppUtils {
                 String color = cursor.getString(6);
                 int course = cursor.getInt(7);
                 String exTrans = cursor.getString(8);
-                words.add(new Word(name , id , course , type, pronounce, meaning, example, exTrans, color));
+                words.add(new Word(name, id, course, type, pronounce, meaning, example, exTrans, color));
                 Log.d("debug", "--- Get word: " + name);
 
             }

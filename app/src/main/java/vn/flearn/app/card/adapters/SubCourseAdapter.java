@@ -116,12 +116,13 @@ public class SubCourseAdapter extends RecyclerView.Adapter<SubCourseAdapter.SubC
 
                     for (int i = start; i <= end; ++i) {
                         Word current = words.get(i);
-                        if (current.getColor().equals(Constant.NEUTRAL)) {
+                        if (current.getColor().equals(Constant.WORD_COLOR_NEUTRAL)) {
                             pass.add(current);
                         }
                     }
 
                     intent.putParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE, (ArrayList) pass);
+                    intent.putExtra(Constant.SUBTITLE , "Phần " + (getAdapterPosition() + 1));
                     intent.putExtra(Constant.DESCRIPTION, title);
                     intent.putExtra(Constant.REVIEW , false);
                     context.startActivity(intent);

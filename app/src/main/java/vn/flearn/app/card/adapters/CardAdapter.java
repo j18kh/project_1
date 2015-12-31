@@ -6,14 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.List;
 
+import vn.flearn.app.card.R;
 import vn.flearn.app.card.fragments.FragmentCard;
 import vn.flearn.app.card.models.Word;
 
@@ -25,20 +26,26 @@ public class CardAdapter extends FragmentStatePagerAdapter {
     private Context context;
     private List<Word> words;
     private boolean isReview;
+    private boolean isDone;
     private ViewPager viewPager;
+    private Toolbar toolbar;
+    private String subTitle;
 
-    public CardAdapter(FragmentManager fm, Context context, List<Word> words , boolean isReview
-                        , ViewPager viewPager) {
+    public CardAdapter(FragmentManager fm, Context context, List<Word> words , boolean isReview, boolean isDone
+                        , ViewPager viewPager, Toolbar toolbar , String subTitle) {
         super(fm);
         this.context = context;
         this.words = words;
         this.isReview = isReview;
         this.viewPager = viewPager;
+        this.toolbar = toolbar;
+        this.subTitle = subTitle;
+        this.isDone = isDone;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return FragmentCard.getInstance(words.get(position), isReview, viewPager, position);
+        return FragmentCard.getInstance(words.get(position), isReview, isDone, viewPager, position);
     }
 
     @Override
@@ -48,23 +55,16 @@ public class CardAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        int position = 0;
-        for (ListView.FixedViewInfo iView : _views) {
-
-        }
+        return POSITION_NONE;
     }
 
     public int removePage(int position) {
         words.remove(position);
-        notifyDataSetChanged    ();
+        notifyDataSetChanged();
         if (position == words.size())
             position = position - 1;
         Log.d("debug" , "" + position);
+        toolbar.setSubtitle(subTitle + " " + context.getString(R.string.left) + " " + words.size() + context.getString(R.string.word));
         return  position;
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((View) object);
     }
 }

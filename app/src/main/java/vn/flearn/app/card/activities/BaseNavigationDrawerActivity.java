@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -91,6 +92,32 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
             @Override
             public void onDrawerOpened(View drawerView) {
+                /* TODO: Deal with number of learned and hard words */
+
+                int currentLearned = AppUtils.getIntegerPreference(getApplication(), Constant.COUNT_DONE, 0);
+                int currentDifficult = AppUtils.getIntegerPreference(getApplication(), Constant.COUNT_DIFFICULT, 0);
+
+                Log.d("debug", "---current learned = " + currentLearned);
+                Log.d("debug", "---current difficult = " + currentDifficult);
+
+                Menu menu = navigationView.getMenu();
+                MenuItem menuItemLearned = menu.getItem(1);
+                MenuItem menuItemDifficult = menu.getItem(2);
+
+                Log.d("debug", "---menu = " + menu);
+                Log.d("debug", "---menu 1 = " + menuItemLearned);
+                Log.d("debug", "---menu 2 = " + menuItemDifficult);
+
+
+
+                menuItemLearned.setTitle(getResources().getString(R.string.menu_navigation_learned)
+                        + " (" + currentLearned + ")");
+                menuItemDifficult.setTitle(getResources().getString(R.string.menu_navigation_hard)
+                        + " (" + currentDifficult + ")");
+
+                menuItemLearned.setEnabled(currentLearned != 0);
+                menuItemDifficult.setEnabled(currentDifficult != 0);
+
                 super.onDrawerOpened(drawerView);
             }
 
@@ -108,6 +135,7 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
     private void navigateWordSlide(boolean learned) {
         Intent intent = new Intent(this , WordSlideActivity.class);
         intent.putExtra(Constant.REVIEW, true);
+        intent.putExtra(Constant.DONE, learned);
         String value;
         if (learned)
             value = Constant.WORD_COLOR_DONE;

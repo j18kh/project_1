@@ -32,4 +32,6 @@
     <string name="please_wait"> Đang load bộ đọc, thử lại trong 2 giây :)</string>
     <string name="word_done">Đã thuộc :)</string>
     <string name="word_difficult">Khó thuộc :(</string>
+    <string name="left">"còn "</string>
+    <string name="word">" từ"</string>
 </resources>

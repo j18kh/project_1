@@ -23,19 +23,19 @@ import vn.flearn.app.card.utils.Constant;
 
 public class WordSlideActivity extends AppCompatActivity {
 
-    private String title;
+    private String title , subTitle;
     private ActionBar actionBar;
     private ViewPager viewPager;
     private List<Word> words;
     private CardAdapter cardAdapter;
     private Toolbar toolbar;
     private boolean isReview;
+    private boolean isDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_slide);
-
 
         initViews();
         setupContents();
@@ -51,6 +51,8 @@ public class WordSlideActivity extends AppCompatActivity {
 
     private void setupActionBar() {
         toolbar.setTitle(title);
+        /*TODO: Add subtitle*/
+        toolbar.setSubtitle(subTitle + " " + getString(R.string.left)+ " " + words.size() + getString(R.string.word));
         setSupportActionBar(toolbar);
 
         actionBar = getSupportActionBar();
@@ -61,7 +63,9 @@ public class WordSlideActivity extends AppCompatActivity {
     private void setupContents() {
         Intent intent = getIntent();
         title = intent.getStringExtra(Constant.DESCRIPTION);
-        isReview = intent.getBooleanExtra(Constant.REVIEW , false);
+        subTitle = intent.getStringExtra(Constant.SUBTITLE);
+        isReview = intent.getBooleanExtra(Constant.REVIEW, false);
+        isDone = intent.getBooleanExtra(Constant.DONE, true);
 
         words = intent.getParcelableArrayListExtra(Constant.SUBCOURSE_PACKAGE);
         if (words.isEmpty()) {
@@ -71,7 +75,7 @@ public class WordSlideActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        cardAdapter = new CardAdapter(getSupportFragmentManager(), this, words , isReview, viewPager);
+        cardAdapter = new CardAdapter(getSupportFragmentManager(), this, words , isReview, isDone,  viewPager, toolbar , subTitle);
         viewPager.setAdapter(cardAdapter);
     }
 

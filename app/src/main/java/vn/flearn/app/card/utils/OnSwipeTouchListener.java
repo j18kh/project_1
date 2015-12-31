@@ -59,7 +59,6 @@ public class OnSwipeTouchListener implements OnTouchListener {
          */
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            // TODO Auto-generated method stub
             onTap();
             return super.onSingleTapConfirmed(e);
         }

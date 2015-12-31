@@ -32,6 +32,7 @@ public class FragmentCard extends Fragment {
 
     private Word word;
     private boolean isReview;
+    private boolean isDone;
 
     private TextView name;
     private TextView pronounce;
@@ -46,13 +47,14 @@ public class FragmentCard extends Fragment {
     private ViewPager viewPager;
     private int position;
 
-    public static FragmentCard getInstance(Word word, boolean isReview, ViewPager viewPager,
+    public static FragmentCard getInstance(Word word, boolean isReview, boolean isDone, ViewPager viewPager,
                                            int position) {
         FragmentCard result = new FragmentCard();
         result.word = word;
         result.isReview = isReview;
         result.viewPager = viewPager;
         result.position = position;
+        result.isDone = isDone;
         return result;
     }
 
@@ -87,21 +89,29 @@ public class FragmentCard extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Animation dismiss = AnimationUtils.loadAnimation(getContext(), R.anim.fadeout_dialog);
-
                     dismiss.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {
+                            (new AsyncDatabase(getContext(), word.getID(), Constant.WORD_COLOR_NEUTRAL)).execute();
+                            if (isDone) {
+                                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
+                                Log.d("debug", "--Current done = " + current);
+                                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current - 1);
+                                Log.d("debug", "--Now done = " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
+                            } else {
+                                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
+                                Log.d("debug", "--Current hard = " + current);
+                                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current - 1);
+                                Log.d("debug", "--Now hard = " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0));
+
+                            }
 
                         }
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            try {
-                                CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
-                                cardAdapter.removePage(position);
-                            } catch (Exception e) {
-                                Log.d("debug", "---ERROR: " + e.getMessage() + " || " + e.getCause());
-                            }
+//                                CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+//                                cardAdapter.removePage(position);
                         }
 
                         @Override
@@ -133,6 +143,10 @@ public class FragmentCard extends Fragment {
                     public void onAnimationStart(Animation animation) {
                         Toast.makeText(getContext(), "Đã thuộc :)", Toast.LENGTH_SHORT).show();
                         (new AsyncDatabase(getContext() , word.getID() , Constant.WORD_COLOR_DONE)).execute();
+                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
+                        Log.d("debug", "---Current done: " + current);
+                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current + 1);
+                        Log.d("debug", "--Now done: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
                     }
 
                     @Override
@@ -162,11 +176,16 @@ public class FragmentCard extends Fragment {
                 AppUtils.setBooleanPreference(getContext(), Constant.WORD_DONE, true);
                 word.setColor(Constant.WORD_COLOR_DIFFICULT);
 
-                Animation upAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-                upAnimation.setAnimationListener(new Animation.AnimationListener() {
+                Animation downAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                downAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
                         Toast.makeText(getContext(), "Khó thuộc :(", Toast.LENGTH_SHORT).show();
+                        (new AsyncDatabase(getContext() , word.getID() , Constant.WORD_COLOR_DIFFICULT)).execute();
+                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
+                        Log.d("debug", "---Current hard: " + current);
+                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current + 1);
+                        Log.d("debug", "--Now hard: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0));
                     }
 
                     @Override
@@ -181,7 +200,7 @@ public class FragmentCard extends Fragment {
 
                     }
                 });
-                viewFlipper.startAnimation(upAnimation);
+                viewFlipper.startAnimation(downAnimation);
                 super.onSwipeBottom();
             }
 
