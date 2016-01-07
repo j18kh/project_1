@@ -28,12 +28,27 @@
     <string name="choose_email_client">Chọn app email</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="please_wait"> Đang load bộ đọc, thử lại trong 2 giây :)</string>
+    <string name="please_wait"> Đang load bộ đọc, hãy thử lại trong 3 giây :)</string>
     <string name="word_done">Đã thuộc :)</string>
     <string name="word_difficult">Khó thuộc :(</string>
     <string name="left">"còn "</string>
     <string name="word">" từ"</string>
     <string name="learned">Từ đã thuộc</string>
     <string name="hard">Từ khó thuộc</string>
+    <string name="error_tts">Có lỗi, không thể đọc được :(</string>
+    <string name="finish">Bạn đã hoàn thành gói từ này! :)</string>
+    <string name="press_once_more">Ấn nút back lần nữa để thoát :)</string>
+    <string name="alert_reset">Bạn có muốn thiết lập lại không?</string>
+    <string name="confirmation">Thiết lập lại</string>
+    <string name="cancel">Hủy bỏ</string>
+    <string name="confiramation_warning">Xác nhận</string>
+    <string name="example">"Vd: "</string>
+
+    <string name="ads_unit">ca-app-pub-1698626424152567/4384549533</string>
+    <string name="dialog_wording_ok">Đồng ý</string>
+    <string name="dialog_wording_cancel">Bỏ qua</string>
+
+    <string name="update_necessary">Please update if you wish to use to continue.</string>
+    <string name="neceesaly_update_dialog">Application version is old.\nPlease update to the lastest version.</string>
+    <string name="dialog_wording_update">Update</string>
 </resources>

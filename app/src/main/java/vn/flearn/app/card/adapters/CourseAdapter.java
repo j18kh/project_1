@@ -59,6 +59,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseHold
         RelativeLayout relativeLayout;
 
         public CourseHolder(View itemView) {
+            /* TODO: Flow controlling 2 */
             super(itemView);
 
             name = (TextView) itemView.findViewById(R.id.item_course_textView_name);

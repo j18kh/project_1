@@ -7,13 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import vn.flearn.app.card.R;
 import vn.flearn.app.card.models.Word;
 
 /**
@@ -24,7 +21,6 @@ public class AppUtils {
     /**
      * All methods are called statically, no need to create a new instance
      */
-    private static TextToSpeech textToSpeech;
     private static SQLiteDatabase database;
 
     private AppUtils() {
@@ -66,20 +62,6 @@ public class AppUtils {
         SharedPreferences sharedPreferences
                 = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getInt(key, init);
-    }
-
-    public static TextToSpeech getTextToSpeech(final Context context) {
-        if (textToSpeech == null) {
-            textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    Toast.makeText(context, R.string.please_wait, Toast.LENGTH_SHORT).show();
-                }
-            }
-            );
-            textToSpeech.setLanguage(Locale.ENGLISH);
-        }
-        return textToSpeech;
     }
 
     public static SQLiteDatabase getDatabase(Context context) {

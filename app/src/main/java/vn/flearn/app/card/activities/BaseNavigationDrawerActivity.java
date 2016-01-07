@@ -1,13 +1,16 @@
 package vn.flearn.app.card.activities;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,21 +23,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.flearn.app.card.R;
+import vn.flearn.app.card.async.AsyncReset;
+import vn.flearn.app.card.fragments.AlertFragment;
 import vn.flearn.app.card.models.Word;
 import vn.flearn.app.card.utils.AppUtils;
 import vn.flearn.app.card.utils.Constant;
 
 public class BaseNavigationDrawerActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private Toolbar toolbar;
-    private ActionBar actionBar;
-    private NavigationView navigationView;
+    protected DrawerLayout drawerLayout;
+    protected Toolbar toolbar;
+    protected ActionBar actionBar;
+    protected NavigationView navigationView;
+    protected boolean backPressedOnce = false;
+    protected Toast info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupLayout();
+
+        info = Toast.makeText(getApplication(), R.string.press_once_more, Toast.LENGTH_SHORT);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -81,7 +91,7 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
                         navigateSetting();
                         break;
                     case R.id.menu_navigation_reset:
-                        Toast.makeText(getApplication(), "Reset invoked", Toast.LENGTH_SHORT).show();
+                        navigateReset();
                         break;
                 }
                 return true;
@@ -129,6 +139,29 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
         drawerToggle.syncState();
+    }
+
+    private void navigateReset() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.alert_reset)
+                .setTitle(getString(R.string.confiramation_warning))
+                .setPositiveButton(getString(R.string.confirmation), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        (new AsyncReset(getApplicationContext())).execute();
+                        AppUtils.setIntegerPreference(getApplicationContext(), Constant.COUNT_DONE, 0);
+                        AppUtils.setIntegerPreference(getApplicationContext(), Constant.COUNT_DIFFICULT, 0);
+                        Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel) , new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext() , "Hủy bỏ" , Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
     }
 
     private void navigateWordSlide(boolean learned) {
@@ -209,6 +242,7 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
     }
 
     private void navigatePackages() {
+        /* TODO: Flow controlling */
         if (getType() != Constant.ActivityType.PACKAGES) {
             Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
             startActivity(intent);
@@ -236,4 +270,23 @@ public class BaseNavigationDrawerActivity extends AppCompatActivity {
         return Constant.ActivityType.ERROR;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (backPressedOnce) {
+            super.onBackPressed();
+            info.cancel();
+            finish();
+        } else {
+//            Toast.makeText(getApplication(), R.string.press_once_more, Toast.LENGTH_SHORT).show();
+            info.show();
+            backPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    backPressedOnce = false;
+                }
+            }, 2000);
+        }
+    }
 }

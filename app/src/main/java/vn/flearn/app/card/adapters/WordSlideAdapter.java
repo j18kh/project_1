@@ -1,54 +1,58 @@
 package vn.flearn.app.card.adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
 import vn.flearn.app.card.R;
-import vn.flearn.app.card.fragments.FragmentCard;
+import vn.flearn.app.card.fragments.WordFragment;
 import vn.flearn.app.card.models.Word;
 
 /**
- * Created by hkhoi on 12/29/15.
+ * Created by huytr on 03-01-2016.
  */
-public class CardAdapter extends FragmentStatePagerAdapter {
+public class WordSlideAdapter extends FragmentStatePagerAdapter {
 
-    private Context context;
     private List<Word> words;
     private boolean isReview;
-    private boolean isDone;
     private ViewPager viewPager;
+    private TextToSpeech textToSpeech;
+    private boolean isDone;
     private Toolbar toolbar;
     private String subTitle;
-    private TextToSpeech textToSpeech;
+    private Context context;
 
-    public CardAdapter(FragmentManager fm, Context context, List<Word> words , boolean isReview, boolean isDone
-                        , ViewPager viewPager, Toolbar toolbar , String subTitle, TextToSpeech textToSpeech) {
+    public WordSlideAdapter(FragmentManager fm ,
+                            List<Word> words ,
+                            boolean isReview ,
+                            ViewPager viewPager,
+                            TextToSpeech textToSpeech,
+                            boolean isDone,
+                            Toolbar toolbar,
+                            String subTitle ,
+                            Context context) {
         super(fm);
-        this.context = context;
         this.words = words;
         this.isReview = isReview;
         this.viewPager = viewPager;
+        this.textToSpeech = textToSpeech;
+        this.isDone = isDone;
         this.toolbar = toolbar;
         this.subTitle = subTitle;
-        this.isDone = isDone;
-        this.textToSpeech = textToSpeech;
+        this.context = context;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return FragmentCard.getInstance(words.get(position), isReview, isDone, viewPager, position, textToSpeech);
+
+        return WordFragment.getInstance(this, words.get(position), isReview);
     }
 
     @Override
@@ -61,13 +65,19 @@ public class CardAdapter extends FragmentStatePagerAdapter {
         return POSITION_NONE;
     }
 
-    public int removePage(int position) {
-        words.remove(position);
+    public void removePage() {
+        int index = viewPager.getCurrentItem();
+        words.remove(index);
         notifyDataSetChanged();
-        if (position == words.size())
-            position = position - 1;
-        Log.d("debug" , "" + position);
         toolbar.setSubtitle(subTitle + " " + context.getString(R.string.left) + " " + words.size() + context.getString(R.string.word));
-        return  position;
     }
+
+    public TextToSpeech getTextToSpeech() {
+        return textToSpeech;
+    }
+
+    public boolean getIsDone() {
+        return isDone;
+    }
+
 }

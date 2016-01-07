@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +17,7 @@ import android.widget.ViewFlipper;
 
 import vn.flearn.app.card.R;
 import vn.flearn.app.card.adapters.CardAdapter;
-import vn.flearn.app.card.async.AsyncDatabase;
+import vn.flearn.app.card.async.AsyncUpdateColor;
 import vn.flearn.app.card.models.Word;
 import vn.flearn.app.card.utils.AppUtils;
 import vn.flearn.app.card.utils.Constant;
@@ -46,15 +44,17 @@ public class FragmentCard extends Fragment {
     private View view;
     private ViewPager viewPager;
     private int position;
+    private TextToSpeech textToSpeech;
 
     public static FragmentCard getInstance(Word word, boolean isReview, boolean isDone, ViewPager viewPager,
-                                           int position) {
+                                           int position, TextToSpeech textToSpeech) {
         FragmentCard result = new FragmentCard();
         result.word = word;
         result.isReview = isReview;
         result.viewPager = viewPager;
         result.position = position;
         result.isDone = isDone;
+        result.textToSpeech = textToSpeech;
         return result;
     }
 
@@ -82,45 +82,41 @@ public class FragmentCard extends Fragment {
         exampleTrans.setText(word.getExampleTrans());
         if (!isReview) {
             close.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             /* TODO: RETURN NEUTRAL WORD */
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Animation dismiss = AnimationUtils.loadAnimation(getContext(), R.anim.fadeout_dialog);
-                    dismiss.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            (new AsyncDatabase(getContext(), word.getID(), Constant.WORD_COLOR_NEUTRAL)).execute();
-                            if (isDone) {
-                                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
-                                Log.d("debug", "--Current done = " + current);
-                                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current - 1);
-                                Log.d("debug", "--Now done = " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
-                            } else {
-                                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
-                                Log.d("debug", "--Current hard = " + current);
-                                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current - 1);
-                                Log.d("debug", "--Now hard = " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0));
+//                    Animation dismiss = AnimationUtils.loadAnimation(getContext(), R.anim.fadeout_dialog);
+//                    dismiss.setAnimationListener(new Animation.AnimationListener() {
+//                        @Override
+//                        public void onAnimationStart(Animation animation) {
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animation animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animation animation) {
+//
+//                        }
+//                    });
+                    (new AsyncUpdateColor(getContext(), word.getID(), Constant.WORD_COLOR_NEUTRAL)).execute();
+                    if (isDone) {
+                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
+                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current - 1);
+                    } else {
+                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
+                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current - 1);
 
-                            }
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-//                                CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
-//                                cardAdapter.removePage(position);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-
-                    viewFlipper.startAnimation(dismiss);
+                    }
+                    CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+                    cardAdapter.removePage(position);
+//                    viewFlipper.startAnimation(dismiss);
                 }
             });
         }
@@ -137,32 +133,38 @@ public class FragmentCard extends Fragment {
                 AppUtils.setBooleanPreference(getContext(), Constant.WORD_DONE, true);
                 word.setColor(Constant.WORD_COLOR_DONE);
 
-                Animation upAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_top);
-                upAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        Toast.makeText(getContext(), "Đã thuộc :)", Toast.LENGTH_SHORT).show();
-                        (new AsyncDatabase(getContext() , word.getID() , Constant.WORD_COLOR_DONE)).execute();
-                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
-                        Log.d("debug", "---Current done: " + current);
-                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current + 1);
-                        Log.d("debug", "--Now done: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        Log.d("debug", "---End animation");
-                        CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
-                        cardAdapter.removePage(position);
-                        /* TODO: Card swipe top */
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                viewFlipper.startAnimation(upAnimation);
+//                Animation upAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_top);
+//                upAnimation.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//                        Toast.makeText(getContext(), "Đã thuộc :)", Toast.LENGTH_SHORT).show();
+//                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
+//                        Log.d("debug", "---Current done: " + current);
+//                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current + 1);
+//                        Log.d("debug", "--Now done: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        Log.d("debug", "---End animation");
+//                        CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+//                        cardAdapter.removePage(position);
+//                        /* TODO: Card swipe top */
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//
+//                    }
+//                });
+//                viewFlipper.startAnimation(upAnimation);
+                Toast.makeText(getContext(), "Đã thuộc :)", Toast.LENGTH_SHORT).show();
+                (new AsyncUpdateColor(getContext(), word.getID(), Constant.WORD_COLOR_DONE)).execute();
+                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0);
+                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DONE, current + 1);
+                Log.d("debug", "--Now done: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DONE, 0));
+                CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+                cardAdapter.removePage(position);
                 super.onSwipeTop();
             }
 
@@ -176,31 +178,36 @@ public class FragmentCard extends Fragment {
                 AppUtils.setBooleanPreference(getContext(), Constant.WORD_DONE, true);
                 word.setColor(Constant.WORD_COLOR_DIFFICULT);
 
-                Animation downAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-                downAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        Toast.makeText(getContext(), "Khó thuộc :(", Toast.LENGTH_SHORT).show();
-                        (new AsyncDatabase(getContext() , word.getID() , Constant.WORD_COLOR_DIFFICULT)).execute();
-                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
-                        Log.d("debug", "---Current hard: " + current);
-                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current + 1);
-                        Log.d("debug", "--Now hard: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0));
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        Log.d("debug", "---End animation");
-                        CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
-                        cardAdapter.removePage(position);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                viewFlipper.startAnimation(downAnimation);
+//                Animation downAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+//                downAnimation.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//                        Toast.makeText(getContext(), "Khó thuộc :(", Toast.LENGTH_SHORT).show();
+//                        int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
+//                        Log.d("debug", "---Current hard: " + current);
+//                        AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current + 1);
+//                        Log.d("debug", "--Now hard: " + AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0));
+//                    }`
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        Log.d("debug", "---End animation");
+//                        CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+//                        cardAdapter.removePage(position);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//
+//                    }
+//                });
+//                viewFlipper.startAnimation(downAnimation);
+                Toast.makeText(getContext(), "Khó thuộc :(", Toast.LENGTH_SHORT).show();
+                (new AsyncUpdateColor(getContext(), word.getID(), Constant.WORD_COLOR_DIFFICULT)).execute();
+                int current = AppUtils.getIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, 0);
+                AppUtils.setIntegerPreference(getContext(), Constant.COUNT_DIFFICULT, current + 1);
+                CardAdapter cardAdapter = (CardAdapter) viewPager.getAdapter();
+                cardAdapter.removePage(position);
                 super.onSwipeBottom();
             }
 
@@ -217,14 +224,19 @@ public class FragmentCard extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
+                    /* TODO: Speak that goddamn word!!! */
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        AppUtils.getTextToSpeech(getContext()).speak((CharSequence) word.getName()
+                        textToSpeech.speak((CharSequence) word.getName()
                                 , TextToSpeech.QUEUE_FLUSH, null, null);
                     } else {
-                        AppUtils.getTextToSpeech(getContext()).speak(word.getName()
+                        textToSpeech.speak(word.getName()
                                 , TextToSpeech.QUEUE_FLUSH, null);
                     }
+                    if (!textToSpeech.isSpeaking()) {
+                        Toast.makeText(getContext(), R.string.please_wait, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception exception) {
+                    Toast.makeText(getContext(), R.string.error_tts, Toast.LENGTH_SHORT).show();
                     Log.d("debug", exception.getMessage());
                 }
 
