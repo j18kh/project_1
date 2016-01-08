@@ -65,7 +65,10 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
         adapter = new CourseAdapter(this, courses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        getDatabaseFromServer();
+
+        if (!AppUtils.getBooleanPreference(this, Constant.DATABASE_DOWNLOADED, false)) {
+            getDatabaseFromServer();
+        }
     }
 
     @Override
@@ -80,61 +83,68 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
     }
 
     private void getDatabaseFromServer() {
-        new Handler().postDelayed(new Runnable() {
+        try {
+            new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    PublicFunction.dismissProgresDialog(progressDialog);
+                @Override
+                public void run() {
+                    try {
+                        PublicFunction.dismissProgresDialog(progressDialog);
                 /* TODO: Download database  */
-                    String uuid = PublicFunction.getUUID(activity);
-                    Log.d("debug", "---UUID = " + uuid);
-                    Map<String, String> params = new HashMap<String, String>();
-                    JSONObject jo;
+                        String uuid = PublicFunction.getUUID(activity);
+                        Log.d("debug", "---UUID = " + uuid);
+                        Map<String, String> params = new HashMap<String, String>();
+                        JSONObject jo;
 
-                    Log.d("debug", "---PublicFunction.isNetworkConnected");
-                    if (PublicFunction.isNetworkConnected(activity)) {
-                        Log.d("debug", "---AjaxCallback");
-                        AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>() {
-                            private List<Course> courseList,
-                                    courseFromApi;
+                        Log.d("debug", "---PublicFunction.isNetworkConnected");
+                        if (PublicFunction.isNetworkConnected(activity)) {
+                            Log.d("debug", "---AjaxCallback");
+                            AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>() {
+                                private List<Course> courseList,
+                                        courseFromApi;
 
-                            @Override
-                            public void callback(String url, JSONObject json, AjaxStatus status) {
-                                courseList = courses;
-                                if (json != null) {
-                                    if (!json.has(Constant.JSON_TAG_ERROR)) {
-                                        Log.d("debug", "---GSON");
-                                        Gson gson = new Gson();
-                                        try {
-                                            courseFromApi = Arrays.asList(gson.fromJson(
-                                                    json.getString(Constant.JSON_TAG_UCOURSE), Course[].class));
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                                @Override
+                                public void callback(String url, JSONObject json, AjaxStatus status) {
+                                    courseList = courses;
+                                    if (json != null) {
+                                        if (!json.has(Constant.JSON_TAG_ERROR)) {
+                                            Log.d("debug", "---GSON");
+                                            Gson gson = new Gson();
+                                            try {
+                                                courseFromApi = Arrays.asList(gson.fromJson(
+                                                        json.getString(Constant.JSON_TAG_UCOURSE), Course[].class));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
                                         }
-
                                     }
+
                                 }
+                            };
 
-                            }
-                        };
+                            params.put("UUID", uuid);
+                            jo = new JSONObject(params);
 
-                        params.put("UUID", uuid);
-                        jo = new JSONObject(params);
+                            Log.d("debug", "---aQuery");
+                            aQuery.post(
+                                    Constant.API_MSERVICE_GET_UCOURSE, jo, JSONObject.class, cb.timeout(3000));
+                            Log.d("debug", "--FINISHED");
 
-                        Log.d("debug", "---aQuery");
-                        aQuery.post(
-                                Constant.API_MSERVICE_GET_UCOURSE, jo, JSONObject.class, cb.timeout(3000));
-                        Log.d("debug", "--FINISHED");
+                        }
 
+                    } catch (Exception e) {
+                        AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, false);
+                        Log.d("debug", "---DOWNLOAD = failed" + e.getMessage());
                     }
-
-                } catch (Exception e) {
-                    AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, false);
-                    Log.d("debug", "---DOWNLOAD = failed" + e.getMessage());
                 }
-            }
-        }, Constant.WAITING_DURATION);
+            }, Constant.WAITING_DURATION);
+        } catch (Exception e) {
+            AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, false);
+            Log.d("debug", "---DOWNLOAD = failed" + e.getMessage());
+        }
+        AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, true);
+        Log.d("debug", "---DOWNLOAD = success!");
 
     }
 }
