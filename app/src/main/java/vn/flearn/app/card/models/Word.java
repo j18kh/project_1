@@ -66,7 +66,8 @@ public class Word implements BaseModel , Parcelable {
     }
 
     public String getName() {
-        return SecretKey.decrypt(Name);
+        return Name;
+//        return SecretKey.decrypt(Name);
     }
 
     public void setName(String name) {
@@ -82,7 +83,8 @@ public class Word implements BaseModel , Parcelable {
     }
 
     public String getPronoun() {
-        return SecretKey.decrypt(Pronoun);
+        return Pronoun;
+//        return SecretKey.decrypt(Pronoun);
     }
 
     public void setPronoun(String pronoun) {
@@ -90,7 +92,8 @@ public class Word implements BaseModel , Parcelable {
     }
 
     public String getMeaning() {
-        return SecretKey.decrypt(Meaning);
+        return Meaning;
+//        return SecretKey.decrypt(Meaning);
     }
 
     public void setMeaning(String meaning) {
@@ -98,7 +101,8 @@ public class Word implements BaseModel , Parcelable {
     }
 
     public String getExample() {
-        return SecretKey.decrypt(Example);
+        return Example;
+//        return SecretKey.decrypt(getExample());
     }
 
     public void setExample(String example) {
@@ -106,7 +110,8 @@ public class Word implements BaseModel , Parcelable {
     }
 
     public String getExampleTrans() {
-        return SecretKey.decrypt(ExampleTrans);
+        return ExampleTrans;
+//        return SecretKey.decrypt(ExampleTrans);
     }
 
     public void setExampleTrans(String exampleTrans) {

@@ -136,4 +136,24 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
             }
         }, Constant.WAITING_DURATION);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedOnce) {
+            super.onBackPressed();
+            info.cancel();
+            finish();
+        } else {
+//            Toast.makeText(getApplication(), R.string.press_once_more, Toast.LENGTH_SHORT).show();
+            info.show();
+            backPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    backPressedOnce = false;
+                }
+            }, 2000);
+        }
+    }
 }
