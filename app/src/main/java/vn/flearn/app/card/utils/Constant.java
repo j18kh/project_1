@@ -93,6 +93,8 @@ public class Constant {
     public static final int MENU_PACKAGES = 0;
     public static final int MENU_LEARNED = 1;
     public static final int MENU_HARD = 2;
+    public static final int REFRESH_TIME =8000;
+
 
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";

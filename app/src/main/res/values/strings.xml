@@ -51,4 +51,6 @@
     <string name="update_necessary">Please update if you wish to use to continue.</string>
     <string name="neceesaly_update_dialog">Application version is old.\nPlease update to the lastest version.</string>
     <string name="dialog_wording_update">Update</string>
+    <string name="time_out">Download từ lâu hơn dự kiến, vui lòng thử lại :(</string>
+    <string name="downloading">Đang tải gói từ lần đầu, vui lòng đợi chút :)</string>
 </resources>
