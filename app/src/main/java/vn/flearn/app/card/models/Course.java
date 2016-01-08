@@ -15,6 +15,7 @@ public class Course implements BaseModel {
     public static final String DESCRIPTION = "Description";
 
     public static final String TABLE = "Course";
+    public static final String IS_ACTIVATED = "IsActivated";
     public static final String[] COLUMNS = {_ID, NAME, LEVEL, DESCRIPTION};
 
     private int ID;
@@ -22,6 +23,7 @@ public class Course implements BaseModel {
     private String Level;
     private String Description;
     private List<Word> Words;
+    private String IsActivated;
 
     public int getID() {
         return ID;
@@ -61,5 +63,13 @@ public class Course implements BaseModel {
 
     public void setWords(List<Word> words) {
         Words = words;
+    }
+
+    public String getIsActivated() {
+        return IsActivated;
+    }
+
+    public void setIsActivated(String isActivated) {
+        IsActivated = isActivated;
     }
 }

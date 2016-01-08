@@ -38,7 +38,6 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
     private ICourseDAO courseDAO;
     private RecyclerView recyclerView;
     private CourseAdapter adapter;
-    protected ProgressDialog progressDialog;
     private AQuery aQuery;
     private Activity activity;
 
@@ -47,7 +46,6 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setItemSelected(Constant.MENU_PACKAGES);
-
         initComponents();
 
     }
@@ -65,10 +63,7 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
         adapter = new CourseAdapter(this, courses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
-        if (!AppUtils.getBooleanPreference(this, Constant.DATABASE_DOWNLOADED, false)) {
-            getDatabaseFromServer();
-        }
+        getDatabaseFromServer();
     }
 
     @Override
@@ -83,68 +78,62 @@ public class MenuActivity extends BaseNavigationDrawerActivity {
     }
 
     private void getDatabaseFromServer() {
-        try {
-            new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
 
-                @Override
-                public void run() {
-                    try {
-                        PublicFunction.dismissProgresDialog(progressDialog);
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
                 /* TODO: Download database  */
-                        String uuid = PublicFunction.getUUID(activity);
-                        Log.d("debug", "---UUID = " + uuid);
-                        Map<String, String> params = new HashMap<String, String>();
-                        JSONObject jo;
+                String uuid = PublicFunction.getUUID(activity);
+                Map<String, String> params = new HashMap<String, String>();
+                JSONObject jo;
 
-                        Log.d("debug", "---PublicFunction.isNetworkConnected");
-                        if (PublicFunction.isNetworkConnected(activity)) {
-                            Log.d("debug", "---AjaxCallback");
-                            AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>() {
-                                private List<Course> courseList,
-                                        courseFromApi;
+                if (PublicFunction.isNetworkConnected(activity)) {
+                    AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>() {
+                        private List<Course> coursesList,
+                                courseFromApi;
 
-                                @Override
-                                public void callback(String url, JSONObject json, AjaxStatus status) {
-                                    courseList = courses;
-                                    if (json != null) {
-                                        if (!json.has(Constant.JSON_TAG_ERROR)) {
-                                            Log.d("debug", "---GSON");
-                                            Gson gson = new Gson();
-                                            try {
-                                                courseFromApi = Arrays.asList(gson.fromJson(
-                                                        json.getString(Constant.JSON_TAG_UCOURSE), Course[].class));
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
+                        @Override
+                        public void callback(String url, JSONObject json, AjaxStatus status) {
+                            coursesList = courses;
+                            if (json != null) {
+                                if (!json.has(Constant.JSON_TAG_ERROR)) {
+                                    Gson gson = new Gson();
+                                    try {
+                                        courseFromApi = Arrays.asList(gson.fromJson(
+                                                json.getString(Constant.JSON_TAG_UCOURSE), Course[].class));
+                                        if (courseFromApi.size() > 0) {
+                                            for (int i = 0; i < coursesList.size(); i++) {
+                                                for (int j = 0; j < courseFromApi.size(); j++) {
+                                                    if (coursesList.get(i).getName().equals(courseFromApi.get(j).getName())) {
+                                                        coursesList.get(i).setIsActivated(courseFromApi.get(j).getIsActivated());
+                                                        courseDAO.saveOrUpdate(coursesList.get(i));
+                                                    } else {
+                                                        coursesList.get(i).setIsActivated("0");
+                                                    }
+                                                }
                                             }
-
                                         }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
 
                                 }
-                            };
-
-                            params.put("UUID", uuid);
-                            jo = new JSONObject(params);
-
-                            Log.d("debug", "---aQuery");
-                            aQuery.post(
-                                    Constant.API_MSERVICE_GET_UCOURSE, jo, JSONObject.class, cb.timeout(3000));
-                            Log.d("debug", "--FINISHED");
+                            }
 
                         }
+                    };
 
-                    } catch (Exception e) {
-                        AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, false);
-                        Log.d("debug", "---DOWNLOAD = failed" + e.getMessage());
-                    }
+                    params.put("UUID", uuid);
+                    jo = new JSONObject(params);
+
+                    aQuery.post(
+                            Constant.API_MSERVICE_GET_UCOURSE, jo, JSONObject.class, cb.timeout(3000));
+
                 }
-            }, Constant.WAITING_DURATION);
-        } catch (Exception e) {
-            AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, false);
-            Log.d("debug", "---DOWNLOAD = failed" + e.getMessage());
-        }
-        AppUtils.setBooleanPreference(activity, Constant.DATABASE_DOWNLOADED, true);
-        Log.d("debug", "---DOWNLOAD = success!");
 
+                Log.d("debug", "---UUID = " + uuid);
+            }
+        }, Constant.WAITING_DURATION);
     }
 }
