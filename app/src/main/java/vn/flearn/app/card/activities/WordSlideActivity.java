@@ -3,6 +3,7 @@ package vn.flearn.app.card.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -58,13 +59,17 @@ public class WordSlideActivity extends AppCompatActivity {
     }
 
     private void setupAds() {
-        adView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
 
-        adView.setAdListener(new AdToastListener(this));
-        adView.loadAd(adRequest);
+                adView.setAdListener(new AdToastListener(getApplicationContext()));
+                adView.loadAd(adRequest);
+            }
+        } , 5000);
     }
 
     private void initComponents() {

@@ -25,6 +25,7 @@ import android.widget.ViewFlipper;
 import vn.flearn.app.card.R;
 import vn.flearn.app.card.adapters.WordSlideAdapter;
 import vn.flearn.app.card.animation.AnimationFactory;
+import vn.flearn.app.card.async.AsyncDecrypt;
 import vn.flearn.app.card.async.AsyncUpdateColor;
 import vn.flearn.app.card.models.Word;
 import vn.flearn.app.card.utils.AppUtils;
@@ -71,6 +72,7 @@ public class WordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        long start = System.currentTimeMillis();
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
         setupToasts();
@@ -88,15 +90,9 @@ public class WordFragment extends Fragment {
 
 
         //  Bind Elements
-        name.setText(word.getName());
-        pronounce.setText(word.getPronoun());
-        meaning.setText(word.getMeaning());
         type.setText(word.getType());
-        example.setText(editTextWordSpan(word.getExample(), word.getName()));
+        //(new AsyncDecrypt(name , pronounce , meaning , example , exampleTrans , word , getActivity())).execute();
 
-        if (word.getExampleTrans() != null && !word.getExampleTrans().isEmpty()) {
-            exampleTrans.setText(getContext().getString(R.string.example) + word.getExampleTrans());
-        }
         viewFlipper.setOnTouchListener(new OnSwipeTouchListener() {
             @Override
             public void onSwipeTop() {
@@ -255,30 +251,9 @@ public class WordFragment extends Fragment {
 
             }
         });
-
+        Log.d("debug" , "Create Fragment = " + (System.currentTimeMillis() - start) + "ms");
         return view;
     }
 
-    private Spannable editTextWordSpan(String text, String wordSpan) {
-        String example = "Ex: " + text;
-        String exampleLower = example.toLowerCase();
-        String wordSpanLower = wordSpan.toLowerCase();
-        int startIndex = exampleLower.indexOf(wordSpanLower);
-        while (startIndex == -1) {
-            wordSpanLower = wordSpanLower.substring(0, wordSpanLower.length() - 1);
-            startIndex = example.indexOf(wordSpanLower);
-        }
-        int stopIndex = startIndex + wordSpan.length();
-        while (stopIndex < example.length() && example.charAt(stopIndex) != ' ') {
-            stopIndex++;
-        }
-        //use a loop to change text color
-        Spannable wordtoSpan = new SpannableString(example);
-        wordtoSpan.setSpan(new StyleSpan(Typeface.BOLD), startIndex, stopIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        wordtoSpan.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.text_grey)),
-                0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        Log.d("debug", "---Text = " + text);
-        Log.d("debug", "---WordSpan = " + wordSpan);
-        return wordtoSpan;
-    }
+
 }
